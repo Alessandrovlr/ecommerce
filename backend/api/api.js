@@ -1,4 +1,4 @@
-import pool from '../connection/ConnectionDb';
+import pool from '../connection/ConnectionDb.js';
 import express from 'express';
 
 const app = express();
@@ -32,11 +32,11 @@ app.get('/produtos/:id', async (req, res) => {
 
 // Rota para criar um novo produto
 app.post('/produtos', async (req, res) => {
-  const { nome, preco, descricao } = req.body;
+  const { nome, descricao, preco, estoque} = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO produtos (nome, preco, descricao) VALUES ($1, $2, $3) RETURNING *',
-      [nome, preco, descricao]
+      'INSERT INTO produtos (nome_produto, descricao, preco, estoque) VALUES ($1, $2, $3, $4) RETURNING *',
+      [nome, descricao, preco, estoque]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
