@@ -7,8 +7,9 @@ export const Menu = () =>{
             <div className="flex space-x-2">
             <i className="fas fa-film text-purple-400 text-3xl"></i>
               <Link to="/" className="text-white text-xl font-bold">
-                Loja Vingadores x Liga da Justiça
+                Loja Vingadores x DC
               </Link>
+              <Link to="/Login">LOGIN</Link>
             </div>
           </div>
         
