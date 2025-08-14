@@ -81,7 +81,7 @@ export const Login = () => {
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 placeholder-gray-500"
               placeholder="Digite seu nome de usuário"
             />
-            {errors.username && <p className="text-red-400 text-sm mt-2">{errors.username}</p>}
+            {errors.username && <p className="text-red-500 text-sm mt-2">{errors.username}</p>}
           </div>
           
           <div>
@@ -94,7 +94,7 @@ export const Login = () => {
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 placeholder-gray-500"
               placeholder="Digite sua senha"
             />
-            {errors.password && <p className="text-red-400 text-sm mt-2">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-sm mt-2">{errors.password}</p>}
           </div>
           
           <button 
