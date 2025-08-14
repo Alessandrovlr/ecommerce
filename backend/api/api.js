@@ -79,6 +79,28 @@
     }
   });
 
+
+  app.post('/login', async (req, res) => {
+    const { nome, senha } = req.body;
+  
+    try {
+      const result = await pool.query(
+        'SELECT * FROM usuarios WHERE nome = $1 AND senha = $2',
+        [nome, senha]
+      );
+  
+      if (result.rows.length === 0) {
+        return res.status(401).send('Usuário ou senha inválidos');
+      }
+  
+      const user = result.rows[0];
+      res.json({ id: user.id, username: user.username, nome: user.nome });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Erro no login');
+    }
+  });
+
   // Inicia o servidor
   const PORT = 3000;
   app.listen(PORT, () => {
