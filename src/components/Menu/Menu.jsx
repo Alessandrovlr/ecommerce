@@ -18,7 +18,7 @@ export const Menu = () => {
         <div className="flex space-x-4 items-center">
           <i className="fas fa-film text-purple-400 text-3xl"></i>
           <Link to="/" className="text-white text-xl font-bold">
-            Loja Vingadores x DC
+            STORE DC VS AVENGERS
           </Link>
           <Link to="/cadastroProdutos" className="text-white hover:text-gray-300">
             Cadastro de Produtos

@@ -157,6 +157,36 @@ app.delete('/usuarios/:id_usuario', async (req, res) => {
     }
 });
 
+//==============================LOGIN===========================================================
+app.post('/login', async (req, res) => {
+  const { nome, senha } = req.body;
+
+  try {
+    const result = await pool.query(
+      'SELECT * FROM usuarios WHERE nome = $1 AND senha = $2',
+      [nome, senha]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ message: 'Credenciais inválidas' });
+    }
+
+    const usuarioEncontrado = result.rows[0];
+
+    // Retorna dados essenciais, sem a senha
+    res.json({
+      id: usuarioEncontrado.id_usuario,  // ajuste conforme sua coluna de id
+      nome: usuarioEncontrado.nome,
+      role: usuarioEncontrado.tipo_usuario // ou outra coluna que representa o papel
+    });
+  } catch (error) {
+    console.error('Erro no login:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
+
+
 
 // Inicia o servidor
 const PORT = 3000;
