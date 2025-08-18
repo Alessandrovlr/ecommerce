@@ -4,6 +4,8 @@ import { PageNotFound } from '../pages/PageNotFound.jsx';
 import { Home } from '../pages/Home.jsx';
 import { Layout } from '../components/Layout/Layout.jsx';
 import { Login } from '../pages/Login.jsx';
+import { AdminPage } from '../components/private/AdminPage.jsx';
+import { CadastroProdutos } from '../pages/cadastroProdutos.jsx';
 
 export const Rotas = () => {
     return (
@@ -12,7 +14,7 @@ export const Rotas = () => {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home/>} />
             <Route path="/login" element={<Login/>} />
-            {/* <Route path="/serie" element={<Serie/>} /> */}
+            <Route path="/cadastroProdutos" element={<AdminPage children={<CadastroProdutos/>}/>} />
             <Route path="/*" element={<PageNotFound />} />
           </Route>
         </Routes>

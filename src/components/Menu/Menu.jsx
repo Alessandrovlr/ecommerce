@@ -10,6 +10,7 @@ export const Menu = () =>{
                 Loja Vingadores x DC
               </Link>
               <Link to="/Login">LOGIN</Link>
+              <Link to="/cadastroProdutos">CADASTRO DE PRODUTOS</Link>
             </div>
           </div>
         

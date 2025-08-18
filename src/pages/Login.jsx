@@ -10,8 +10,8 @@ const loginSchema = z.object({
 });
 
 export const Login = () => {
-  const { login } = useAuth(); // <- contexto real
-  const navigate = useNavigate(); // <- navegação real
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -23,23 +23,23 @@ export const Login = () => {
     setErrors({});
     setServerError('');
 
-    // 1. Validação com Zod
+    // ✅ Validação com Zod (corrigido)
     const result = loginSchema.safeParse({ username, password });
 
     if (!result.success) {
-      const newErrors = {};
-      result.error.errors.forEach((err) => {
-        newErrors[err.path[0]] = err.message;
+      const formatted = result.error.format();
+      setErrors({
+        username: formatted.username?._errors[0],
+        password: formatted.password?._errors[0],
       });
-      setErrors(newErrors);
       return;
     }
 
-    // 2. Chama login do contexto (que faz POST na API)
+    // ✅ Chama login do contexto
     const response = await login(username, password);
 
     if (response.success) {
-      navigate('/'); // redireciona ao fazer login
+      navigate('/'); // Redireciona após login
     } else {
       setServerError(response.message || 'Usuário ou senha inválidos.');
     }
@@ -57,7 +57,7 @@ export const Login = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 placeholder-gray-500"
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
               placeholder="Digite seu nome de usuário"
             />
             {errors.username && <p className="text-red-400 text-sm mt-2">{errors.username}</p>}
@@ -70,7 +70,7 @@ export const Login = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 placeholder-gray-500"
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
               placeholder="Digite sua senha"
             />
             {errors.password && <p className="text-red-400 text-sm mt-2">{errors.password}</p>}
