@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import cors from 'cors'; 
+import axios from 'axios'; // Importei o axios para padronizar com o código do backend
 
 // Exemplo de dados de produtos para visualização sem o backend
 // Substitua este array pela chamada da sua API
@@ -65,12 +66,8 @@ export const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:3000/produtos');
-        if (!response.ok) {
-          throw new Error(`Erro HTTP: ${response.status}`);
-        }
-        const data = await response.json();
-        setProducts(data);
+        const response = await axios.get('http://localhost:3000/produtos');
+        setProducts(response.data);
         setError(null);
       } catch (e) {
         // Se a requisição falhar, usamos os dados mockados
@@ -103,12 +100,11 @@ export const Home = () => {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => (
-          <div key={product.id} className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+          <div key={product.id_produto} className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
             <div className="relative">
-              {/* O `src` da imagem deve ser a coluna 'imagem' do seu banco de dados */}
-              {/* Usando um placeholder como fallback caso a URL da imagem esteja vazia ou inválida */}
+              {/* CORREÇÃO: Concatena a URL base com o caminho da imagem do backend. */}
               <img
-                src={product.imagem || "https://placehold.co/400x400/374151/FFFFFF?text=Imagem+indisponível"}
+                src={product.imagem ? `http://localhost:3000${product.imagem}` : "https://placehold.co/400x400/374151/FFFFFF?text=Imagem+indisponível"}
                 alt={product.nome_produto}
                 className="w-full h-64 object-cover"
               />
@@ -123,7 +119,7 @@ export const Home = () => {
                 <span className="text-lg font-bold text-green-400">
                   R$ {parseFloat(product.preco).toFixed(2)}
                 </span>
-                <Link to={`/carrinho/${product.id}`}>
+                <Link to={`/carrinho/${product.id_produto}`}>
                   <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
                     Adicionar
                   </button>
