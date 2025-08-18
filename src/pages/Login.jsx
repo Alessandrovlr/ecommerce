@@ -1,68 +1,47 @@
-import React, { useState, createContext, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { z } from 'zod'; // Importa o Zod para validação
+import { z } from 'zod';
+import { useAuth } from '../context/AuthContext';
 
-// Define o esquema de validação com Zod
+// Esquema de validação
 const loginSchema = z.object({
   username: z.string().min(3, { message: "O nome de usuário deve ter pelo menos 3 caracteres." }),
   password: z.string().min(6, { message: "A senha deve ter pelo menos 6 caracteres." }),
 });
 
-// Cria um contexto de autenticação de exemplo
-const AuthContext = createContext(null);
-
-// Hook para usar o contexto de autenticação
-const useAuth = () => {
-  return useContext(AuthContext);
-};
-
-// Provedor de autenticação de exemplo
-const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
-  const login = (newUser) => {
-    setUser(newUser);
-  };
-
-  const logout = () => {
-    setUser(null);
-  };
-
-  const value = { user, login, logout };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
 export const Login = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState('');
 
-  // Mock do hook `useAuth` e `useNavigate` para que o código seja executável no Canvas
-  const auth = {
-    login: (username) => console.log(`Usuário logado: ${username}`),
-  };
-  const navigate = () => console.log('Navegação para a home');
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); // Limpa erros anteriores
+    setErrors({});
+    setServerError('');
 
-    try {
-      // Valida os dados do formulário com Zod
-      loginSchema.parse({ username, password });
+    // ✅ Validação com Zod (corrigido)
+    const result = loginSchema.safeParse({ username, password });
 
-      // Se a validação passar, continua com a lógica de login
-      auth.login(username);
-      navigate('/');
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const newErrors = {};
-        error.errors.forEach(err => {
-          newErrors[err.path[0]] = err.message;
-        });
-        setErrors(newErrors);
-      }
+    if (!result.success) {
+      const formatted = result.error.format();
+      setErrors({
+        username: formatted.username?._errors[0],
+        password: formatted.password?._errors[0],
+      });
+      return;
+    }
+
+    // ✅ Chama login do contexto
+    const response = await login(username, password);
+
+    if (response.success) {
+      navigate('/'); // Redireciona após login
+    } else {
+      setServerError(response.message || 'Usuário ou senha inválidos.');
     }
   };
 
@@ -73,32 +52,34 @@ export const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">Usuário</label>
-            <input 
-              type="text" 
-              id="username" 
-              value={username} 
-              onChange={(e) => setUsername(e.target.value)} 
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 placeholder-gray-500"
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
               placeholder="Digite seu nome de usuário"
             />
             {errors.username && <p className="text-red-400 text-sm mt-2">{errors.username}</p>}
           </div>
-          
+
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">Senha</label>
-            <input 
-              type="password" 
-              id="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 placeholder-gray-500"
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
               placeholder="Digite sua senha"
             />
             {errors.password && <p className="text-red-400 text-sm mt-2">{errors.password}</p>}
           </div>
-          
-          <button 
-            type="submit" 
+
+          {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
+
+          <button
+            type="submit"
             className="w-full px-4 py-3 mt-6 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
           >
             Entrar
@@ -108,5 +89,3 @@ export const Login = () => {
     </div>
   );
 };
-
-
