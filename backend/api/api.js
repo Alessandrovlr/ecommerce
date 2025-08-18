@@ -80,29 +80,48 @@
   });
 
 
-  app.post('/login', async (req, res) => {
-    const { nome, senha } = req.body;
-  
-    try {
-      const result = await pool.query(
-        'SELECT * FROM usuarios WHERE nome = $1 AND senha = $2',
-        [nome, senha]
-      );
-  
-      if (result.rows.length === 0) {
-        return res.status(401).send('Usuário ou senha inválidos');
-      }
-  
-      const user = result.rows[0];
-      res.json({ id: user.id, username: user.username, nome: user.nome });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Erro no login');
-    }
-  });
+//========================USUARIOS==============================================================
+app.get("/usuarios", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM usuarios");
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+    res.status(500).json({ error: "Erro interno do servidor" });
+  }
+});
 
-  // Inicia o servidor
-  const PORT = 3000;
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-  });
+// POST novo usuário
+app.post("/usuarios", async (req, res) => {
+  try {
+    const { nome, sobrenome, cpf, telefone, endereco, forma_pagamento, email, senha, tipo_usuario } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO usuarios 
+      (nome, sobrenome, cpf, telefone, endereco, forma_pagamento, email, senha, tipo_usuario) 
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
+      [nome, sobrenome, cpf, telefone, endereco, forma_pagamento, email, senha, tipo_usuario]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Erro ao inserir usuário:", error);
+    res.status(500).json({ error: "Erro interno do servidor" });
+  }
+});
+
+// DELETE usuário
+app.delete("/usuarios/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("DELETE FROM usuarios WHERE id_usuario = $1", [id]);
+    res.json({ message: "Usuário deletado com sucesso" });
+  } catch (error) {
+    console.error("Erro ao deletar usuário:", error);
+    res.status(500).json({ error: "Erro interno do servidor" });
+  }
+});
+
+app.listen(3000, () => {
+  console.log("Servidor rodando na porta 3000 🚀");
+});
