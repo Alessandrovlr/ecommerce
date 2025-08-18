@@ -1,58 +1,58 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import cors from 'cors'; 
-import axios from 'axios'; // Importei o axios para padronizar com o código do backend
+import axios from 'axios';
 
 // Exemplo de dados de produtos para visualização sem o backend
 // Substitua este array pela chamada da sua API
 const mockProducts = [
   {
-    id: 1,
+    id_produto: 1, // Corrigido para 'id_produto' para consistência
     nome_produto: "Camiseta Homem de Ferro",
     descricao: "Camiseta de alta qualidade com estampa do Homem de Ferro.",
     preco: 49.90,
     estoque: 15,
-    imagem: "https://placehold.co/400x400/000000/FFFFFF?text=Homem+de+Ferro",
+    imagem: "https://images.unsplash.com/photo-1627845348873-10e9f65c1926?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1080&fit=max",
   },
   {
-    id: 2,
+    id_produto: 2,
     nome_produto: "Boneco Funko Pop Thanos",
     descricao: "Boneco colecionável do vilão Thanos, com a manopla do infinito.",
     preco: 129.50,
     estoque: 5,
-    imagem: "https://placehold.co/400x400/5A2D5E/FFFFFF?text=Thanos+Funko",
+    imagem: "https://images.unsplash.com/photo-1627447477610-8d51b3f96f9a?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1080&fit=max",
   },
   {
-    id: 3,
+    id_produto: 3,
     nome_produto: "Caneca Capitão América",
     descricao: "Caneca de cerâmica com escudo do Capitão América.",
     preco: 29.90,
     estoque: 20,
-    imagem: "https://placehold.co/400x400/003399/FFFFFF?text=Capitão+América",
+    imagem: "https://images.unsplash.com/photo-1627850849206-a537f86f7f6f?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1080&fit=max",
   },
   {
-    id: 4,
+    id_produto: 4,
     nome_produto: "Mochila Thor",
     descricao: "Mochila resistente com martelo do Thor.",
     preco: 150.00,
     estoque: 8,
-    imagem: "https://placehold.co/400x400/808080/FFFFFF?text=Mochila+Thor",
+    imagem: "https://images.unsplash.com/photo-1627845350352-78d2b2f6b8c9?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1080&fit=max",
   },
   {
-    id: 5,
+    id_produto: 5,
     nome_produto: "Chaveiro Viúva Negra",
     descricao: "Chaveiro temático da Viúva Negra.",
     preco: 19.90,
     estoque: 30,
-    imagem: "https://placehold.co/400x400/B80000/FFFFFF?text=Viúva+Negra",
+    imagem: "https://images.unsplash.com/photo-1627447477610-8d51b3f96f9a?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1080&fit=max",
   },
   {
-    id: 6,
+    id_produto: 6,
     nome_produto: "Mousepad Hulk",
     descricao: "Mousepad grande com estampa do Hulk esmagando.",
     preco: 35.00,
     estoque: 10,
-    imagem: "https://placehold.co/400x400/4CAF50/FFFFFF?text=Hulk",
+    imagem: "https://images.unsplash.com/photo-1627845348873-10e9f65c1926?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1080&fit=max",
   },
 ];
 
@@ -102,9 +102,9 @@ export const Home = () => {
         {products.map((product) => (
           <div key={product.id_produto} className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
             <div className="relative">
-              {/* CORREÇÃO: Concatena a URL base com o caminho da imagem do backend. */}
+              {/* O `src` da imagem agora é diretamente a URL completa retornada do backend */}
               <img
-                src={product.imagem ? `http://localhost:3000${product.imagem}` : "https://placehold.co/400x400/374151/FFFFFF?text=Imagem+indisponível"}
+                src={product.imagem || "https://placehold.co/400x400/374151/FFFFFF?text=Imagem+indisponível"}
                 alt={product.nome_produto}
                 className="w-full h-64 object-cover"
               />
@@ -129,11 +129,6 @@ export const Home = () => {
           </div>
         ))}
       </div>
-      {/* O link para o carrinho agora está em cada produto, mas você pode
-      adicionar um link geral se necessário, como a sua versão anterior. */}
-      {/* <Link to="/carrinho" className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition">
-        Compras
-      </Link> */}
     </div>
   );
 };

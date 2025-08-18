@@ -161,5 +161,5 @@ app.delete('/usuarios/:id_usuario', async (req, res) => {
 // Inicia o servidor
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}🚀`);
 });
