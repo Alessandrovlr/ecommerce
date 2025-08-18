@@ -1,9 +1,8 @@
-// services/authService.js
 import axios from 'axios';
 
 export const loginService = async (username, password) => {
   try {
-    const response = await axios.get('http://localhost:3000/login', {
+    const response = await axios.post('http://localhost:3000/login', {
       nome: username,
       senha: password,
     });

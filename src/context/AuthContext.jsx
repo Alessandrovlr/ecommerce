@@ -1,16 +1,29 @@
-// context/AuthContext.js
-import React, { createContext, useContext, useState } from 'react';
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { loginService } from '../services/script/authService';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
 
   const login = async (username, password) => {
     const result = await loginService(username, password);
     if (result.success) {
-      setUser(result.data); // salva o usuário retornado pela API
+      setUser(result.data); 
     }
     return result;
   };
