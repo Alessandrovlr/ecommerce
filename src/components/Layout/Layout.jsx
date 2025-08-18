@@ -40,7 +40,7 @@ export const Layout = () => {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-2 pt-4 text-center text-sm">
-            <p>&copy; 2024 DC VS AVENGERS. Todos os direitos reservados.</p>
+            <p>&copy; 2025 DC VS AVENGERS. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
